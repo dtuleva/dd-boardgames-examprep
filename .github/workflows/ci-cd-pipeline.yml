@@ -1,25 +1,40 @@
-name: Build and Test
+name: build-test-deploy
 
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v3
     - name: Use Node.js 18.x
       uses: actions/setup-node@v3
       with:
         node-version: 18.x
         cache: 'npm'
-    - name: Install dependencies
+    - name: Install npm dependencies
       run: npm install
     - name: Run Unit Tests
       run: npm run test:unit
     - name: Display SoftUni Username
       run: echo 'dtuleva'
+
+  deploy:
+    needs: build-and-test
+
+    if: github.event_name == 'workflow_dispatch'
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy 
+      uses: johnbeynon/render-deploy-action@v0.0.8
+      with:
+        service-id: ${{ secrets.RENDER_SERVICE_ID }}
+        api-key: ${{ secrets.RENDER_API_KEY }}
