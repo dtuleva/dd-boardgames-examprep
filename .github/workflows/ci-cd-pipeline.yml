@@ -38,8 +38,8 @@ jobs:
       with:
         service-id: ${{ secrets.RENDER_SERVICE_ID }}
         api-key: ${{ secrets.RENDER_API_KEY }}
-    - name: Wait for deploy (3 minutes)
-      run: sleep 180
+    - name: Mock wait for deploy (30 seconds)
+      run: sleep 30
   
   test-ui:
     needs: deploy
@@ -56,7 +56,7 @@ jobs:
     - name: Install npm dependencies
       run: npm install
     - name: Setup Playwright
-      run: npm playwright install
+      run: npx playwright install
     - name: Run UI Tests
       run: npm run test:ui
 
